@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ service.name }} — La Une Multiservice{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="{% url 'services_list' %}">Services</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">{{ service.name }}</span>
+    </div>
+    {% if service.hero_image %}
+    <div style="width:80px;height:80px;border-radius:12px;overflow:hidden;border:3px solid var(--gold);margin-bottom:1rem;display:inline-block;">
+      <img src="{{ service.hero_image.url }}" alt="{{ service.name }}" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    {% else %}
+    <div style="display:inline-block;font-size:3rem;margin-bottom:1rem;">
+      {% if service.icon == 'architecture' %}🏛️{% elif service.icon == 'computer' %}💻{% elif service.icon == 'plumbing' %}🔧{% elif service.icon == 'electrical' %}⚡{% elif service.icon == 'construction' %}🏗️{% elif service.icon == 'landscaping' %}🌿{% elif service.icon == 'cleaning' %}✨{% elif service.icon == 'security' %}🔒{% else %}⚙️{% endif %}
+    </div>
+    {% endif %}
+    <h1>{{ service.name }}</h1>
+    <p>{{ service.tagline }}</p>
+    <div style="margin-top:1.5rem;">
+      <a href="{% url 'devis_request' %}" class="btn btn-primary">Demander un devis →</a>
+    </div>
+  </div>
+</section>
+
+<!-- DESCRIPTION -->
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:4rem;align-items:start;">
+      <div class="reveal">
+        <span class="section-eyebrow">À propos du service</span>
+        <h2 style="margin-bottom:1.5rem;">Notre expertise en <span class="text-gold">{{ service.name }}</span></h2>
+        <div style="font-size:1rem;line-height:1.9;color:var(--slate);">{{ service.description|linebreaks }}</div>
+
+        {% if service.features.all %}
+        <h3 style="margin-top:2.5rem;margin-bottom:1.5rem;">Ce que nous proposons</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          {% for feature in service.features.all %}
+          <div class="highlight-box">
+            <h4 style="margin-bottom:0.5rem;font-size:0.95rem;">{{ feature.title }}</h4>
+            <p style="font-size:0.825rem;margin:0;">{{ feature.description }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="reveal">
+        <div style="background:var(--navy);border-radius:var(--radius-lg);padding:2rem;position:sticky;top:100px;">
+          <h3 style="color:var(--white);margin-bottom:1.5rem;font-size:1.2rem;">Démarrer votre projet</h3>
+          <p style="color:rgba(255,255,255,0.7);font-size:0.875rem;margin-bottom:1.5rem;">Obtenez un devis personnalisé pour votre projet {{ service.name|lower }}. Gratuit et sans engagement.</p>
+          <a href="{% url 'devis_request' %}" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:1rem;">Obtenir un devis →</a>
+          <a href="{% url 'contact' %}" class="btn btn-outline" style="width:100%;justify-content:center;">Nous contacter</a>
+          <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+              <span style="color:var(--gold);">✓</span>
+              <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;">Devis gratuit sous 24h</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+              <span style="color:var(--gold);">✓</span>
+              <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;">Experts certifiés</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+              <span style="color:var(--gold);">✓</span>
+              <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;">Garantie sur les travaux</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+{% if projects %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Réalisations</span>
+      <h2>Nos projets <span class="text-gold">{{ service.name|lower }}</span></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="grid-3">
+      {% for project in projects %}
+      <a href="{% url 'project_detail' project.slug %}" class="project-card reveal" style="text-decoration:none;">
+        {% if project.cover_image %}
+        <img src="{{ project.cover_image.url }}" alt="{{ project.title }}">
+        {% else %}
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:4rem;">🏗️</div>
+        {% endif %}
+        <div class="project-card-overlay">
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.location }}{% if project.year %} — {{ project.year }}{% endif %}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- FAQ -->
+{% if faqs %}
+<section class="section" style="background:var(--cream);">
+  <div class="container" style="max-width:800px;">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Questions fréquentes</span>
+      <h2>FAQ <span class="text-gold">{{ service.name }}</span></h2>
+      <div class="section-divider"></div>
+    </div>
+    {% for faq in faqs %}
+    <div class="faq-item reveal">
+      <button class="faq-question">
+        {{ faq.question }}
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">{{ faq.answer }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

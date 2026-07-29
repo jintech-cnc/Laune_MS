@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Connexion — La Une Multiservice{% endblock %}
+{% block content %}
+<section style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--cream);padding-top:80px;">
+  <div style="width:100%;max-width:420px;padding:1.5rem;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div class="brand-logo" style="margin:0 auto 1rem;width:52px;height:52px;font-size:1.3rem;">LU</div>
+      <h2>Connexion</h2>
+      <p style="font-size:0.875rem;">Accès réservé aux administrateurs</p>
+    </div>
+    <div style="background:var(--white);border-radius:var(--radius-lg);padding:2.5rem;box-shadow:var(--shadow-md);border:1px solid var(--cream-dark);">
+      {% if form.errors %}<div class="alert alert-error">Identifiants incorrects. Veuillez réessayer.</div>{% endif %}
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Nom d'utilisateur</label>
+          <input type="text" name="username" class="form-control" autofocus required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Se connecter →</button>
+      </form>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <a href="{% url 'home' %}" style="font-size:0.875rem;color:var(--slate-light);">← Retour au site</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

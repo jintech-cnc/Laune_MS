@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ item.name }} — Catalogue La Une Multiservice{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a><span class="breadcrumb-sep">›</span>
+      <a href="{% url 'catalogue_list' %}">Catalogue</a><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">{{ item.name }}</span>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:1rem;">
+      <span class="badge" style="background:rgba(201,168,76,0.2);color:var(--gold);">{{ item.get_item_type_display }}</span>
+      {% if item.domain %}<span class="badge" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);">{{ item.domain.name }}</span>{% endif %}
+    </div>
+    <h1>{{ item.name }}</h1>
+    <p>{{ item.short_description }}</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:3fr 1fr;gap:3rem;align-items:start;">
+
+      <!-- LEFT: images + description -->
+      <div class="reveal">
+
+        <!-- Galerie photos -->
+        {% with photos=item.photos.all %}
+        {% if photos or item.cover_image %}
+        <div data-gallery="catalogue-{{ item.pk }}">
+          {% if photos %}
+          <div class="gallery-grid">
+            {% if item.cover_image %}
+            <div class="gallery-thumb gallery-cover" data-full="{{ item.cover_image.url }}" data-caption="{{ item.name }}">
+              <img src="{{ item.cover_image.url }}" alt="{{ item.name }}">
+              <div class="gallery-thumb-overlay">🔍</div>
+            </div>
+            {% endif %}
+            {% for photo in photos %}
+            <div class="gallery-thumb {% if not item.cover_image and forloop.first %}gallery-cover{% endif %}" data-full="{{ photo.image.url }}" data-caption="{{ photo.caption }}">
+              <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:item.name }}">
+              <div class="gallery-thumb-overlay">🔍</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% elif item.cover_image %}
+          <div class="gallery-thumb" data-full="{{ item.cover_image.url }}" data-caption="{{ item.name }}" style="border-radius:12px;aspect-ratio:16/9;margin-bottom:1.5rem;">
+            <img src="{{ item.cover_image.url }}" alt="{{ item.name }}" style="border-radius:12px;">
+            <div class="gallery-thumb-overlay">🔍</div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h2 style="margin-top:2rem;margin-bottom:1rem;">Description détaillée</h2>
+        <div style="font-size:1rem;line-height:1.9;color:var(--slate);">{{ item.description|linebreaks }}</div>
+
+        {% if item.get_includes_list %}
+        <div style="margin-top:2rem;">
+          <h3 style="margin-bottom:1rem;font-size:1.2rem;">Ce qui est inclus</h3>
+          <ul class="includes-list">
+            {% for inc in item.get_includes_list %}<li>{{ inc }}</li>{% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: sticky card -->
+      <div class="reveal">
+        <div style="background:var(--navy);border-radius:var(--radius-lg);padding:2rem;position:sticky;top:100px;">
+          <div style="text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(201,168,76,0.2);">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">Prix indicatif</div>
+            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);">{{ item.get_price_display }}</div>
+            {% if not item.price_on_quote and item.price %}
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">par {{ item.get_price_unit_display }}</div>
+            {% endif %}
+          </div>
+
+          {% if item.duration %}
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.75rem;">
+            <span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Durée</span>
+            <span style="color:var(--white);font-size:0.8rem;font-weight:500;">{{ item.duration }}</span>
+          </div>
+          {% endif %}
+          {% if item.warranty %}
+          <div style="display:flex;justify-content:space-between;margin-bottom:1.25rem;">
+            <span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Garantie</span>
+            <span style="color:var(--white);font-size:0.8rem;font-weight:500;">{{ item.warranty }}</span>
+          </div>
+          {% endif %}
+
+          <a href="{% url 'devis_request' %}" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:0.75rem;">Demander un devis →</a>
+          <a href="{% url 'contact' %}" class="btn btn-outline" style="width:100%;justify-content:center;">Nous contacter</a>
+
+          <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;font-size:0.78rem;color:rgba(255,255,255,0.6);">
+              <span style="color:var(--gold);">✓</span> Devis gratuit sous 24h
+            </div>
+            <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;font-size:0.78rem;color:rgba(255,255,255,0.6);">
+              <span style="color:var(--gold);">✓</span> Experts certifiés
+            </div>
+            <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;color:rgba(255,255,255,0.6);">
+              <span style="color:var(--gold);">✓</span> Satisfaction garantie
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELATED -->
+    {% if related %}
+    <div style="margin-top:4rem;">
+      <h3 style="margin-bottom:2rem;">Dans le même domaine</h3>
+      <div class="grid-4">
+        {% for r in related %}
+        <a href="{% url 'catalogue_detail' r.slug %}" style="text-decoration:none;" class="reveal">
+          <div class="catalogue-card">
+            <div class="catalogue-card-img" style="height:140px;">
+              {% if r.cover_image %}<img src="{{ r.cover_image.url }}" alt="{{ r.name }}">{% else %}📦{% endif %}
+              <span class="catalogue-type-badge type-{{ r.item_type }}">{{ r.get_item_type_display }}</span>
+            </div>
+            <div class="catalogue-card-body">
+              <h3 style="font-size:0.9rem;">{{ r.name }}</h3>
+              <div class="catalogue-price" style="font-size:1rem;">{{ r.get_price_display }}</div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/lightbox.js' %}"></script>{% endblock %}

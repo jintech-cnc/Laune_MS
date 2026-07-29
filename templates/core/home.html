@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}La Une Multiservice — L'excellence à votre service{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" style="position:relative;">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="hero-accent"></div>
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;min-height:100vh;padding-top:80px;position:relative;z-index:2;">
+    <div class="hero-content">
+      <div class="hero-eyebrow" data-parallax="0.5">Depuis 2021 — Kolwezi, République Démocratique du Congo</div>
+      <h1 style="margin-bottom:0.5rem;">L'excellence dans</h1>
+      <h1 style="color:var(--gold);min-height:1.3em;"><span id="typewriter-text"></span></h1>
+      <p style="margin-top:1.5rem;">De l'architecture à l'informatique, de la plomberie à l'électricité — La Une Multiservice réunit des experts passionnés pour donner vie à vos projets les plus ambitieux.</p>
+      <div class="hero-actions" style="margin-top:2rem;">
+        <a href="{% url 'devis_request' %}" class="btn btn-primary btn-lg">Obtenir un devis gratuit →</a>
+        <a href="{% url 'portfolio' %}" class="btn btn-outline btn-lg">Voir nos réalisations</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="number counter animate-gradient" data-target="25">0</span><span class="animate-gradient" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;">+</span>
+          <span class="label">Projets réalisés</span>
+        </div>
+        <div class="hero-stat">
+          <span class="number counter animate-gradient" data-target="5">0</span>
+          <span class="label">Années d'expérience</span>
+        </div>
+        <div class="hero-stat">
+          <span class="number counter animate-gradient" data-target="98">0</span><span class="animate-gradient" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;">%</span>
+          <span class="label">Clients satisfaits</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-image-stack">
+        <div style="width:380px;height:460px;background:linear-gradient(135deg,rgba(21,36,56,0.8),rgba(26,47,74,0.8));border-radius:12px;position:absolute;top:0;right:0;display:flex;align-items:center;justify-content:center;font-size:8rem;border:1px solid rgba(201,168,76,0.15);">🏗️</div>
+        <div style="width:220px;height:260px;background:linear-gradient(135deg,rgba(13,27,42,0.9),rgba(21,36,56,0.9));border-radius:12px;border:3px solid var(--gold);position:absolute;bottom:0;left:0;display:flex;align-items:center;justify-content:center;font-size:5rem;">💻</div>
+        <div class="hero-floating-card">
+          <div class="icon">⭐</div>
+          <div><strong>Certifié ISO 9001</strong><span>Qualité garantie</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-dot"></div>
+    <span>Défiler</span>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Nos domaines d'expertise</span>
+      <h2>Des services <span class="gradient-text">complets</span> pour tous vos besoins</h2>
+      <p>Une équipe pluridisciplinaire à votre disposition pour concrétiser chaque projet avec rigueur et créativité.</p>
+      <div class="section-divider section-gold-line"></div>
+    </div>
+    <div class="services-grid">
+      {% for service in services %}
+      <div class="service-card reveal" style="--i:{{ forloop.counter }};">
+        <div class="service-card-top">
+          {% if service.hero_image %}
+            <img src="{{ service.hero_image.url }}" alt="{{ service.name }}">
+            <div class="service-card-top-overlay"></div>
+          {% else %}
+            <span class="service-card-icon-fallback">
+              {% if service.icon == 'architecture' %}🏛️{% elif service.icon == 'computer' %}💻{% elif service.icon == 'plumbing' %}🔧{% elif service.icon == 'electrical' %}⚡{% elif service.icon == 'construction' %}🏗️{% elif service.icon == 'landscaping' %}🌿{% elif service.icon == 'cleaning' %}✨{% elif service.icon == 'security' %}🔒{% else %}⚙️{% endif %}
+            </span>
+            <div class="service-card-bg-text">{{ service.name|slice:":2"|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="service-card-body">
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.tagline }}</p>
+          <a href="{% url 'service_detail' service.slug %}" class="service-card-link">Découvrir <span>→</span></a>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--slate-light);">
+        <p>Aucun service configuré. <a href="/admin/">Ajouter des services →</a></p>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'services_list' %}" class="btn btn-outline-gold">Voir tous nos services</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<section class="stats-section" data-parallax="0.2">
+  <div class="container">
+    <div class="stats-grid">
+      {% for stat in stats %}
+      <div class="stat-item reveal">
+        <span class="number counter" data-target="{{ stat.value|default:'0' }}">{{ stat.value }}</span><span style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;color:var(--gold);">{{ stat.suffix }}</span>
+        <div class="label">{{ stat.label }}</div>
+      </div>
+      {% empty %}
+      <div class="stat-item reveal"><span class="number">25+</span><div class="label">Projets réalisés</div></div>
+      <div class="stat-item reveal"><span class="number">5</span><div class="label">Années</div></div>
+      <div class="stat-item reveal"><span class="number">8</span><div class="label">Domaines</div></div>
+      <div class="stat-item reveal"><span class="number">98%</span><div class="label">Satisfaction</div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJETS ═══ -->
+{% if featured_projects %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Portfolio sélectionné</span>
+      <h2>Nos <span class="gradient-text">réalisations</span> phares</h2>
+      <p>Un aperçu de notre savoir-faire à travers des projets variés et ambitieux.</p>
+      <div class="section-divider section-gold-line"></div>
+    </div>
+    <div class="grid-3">
+      {% for project in featured_projects %}
+      <a href="{% url 'project_detail' project.slug %}" class="project-card reveal" style="text-decoration:none;">
+        {% if project.cover_image %}<img src="{{ project.cover_image.url }}" alt="{{ project.title }}">
+        {% else %}<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:4rem;">🏗️</div>{% endif %}
+        <div class="project-card-overlay">
+          <div class="project-domain">{{ project.domain.name }}</div>
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.location }}{% if project.year %} — {{ project.year }}{% endif %}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'portfolio' %}" class="btn btn-navy">Voir tout le portfolio →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ POURQUOI NOUS ═══ -->
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;">
+      <div class="reveal">
+        <span class="section-eyebrow">Pourquoi nous choisir</span>
+        <h2 style="margin-bottom:1.5rem;">Votre confiance,<br>notre <span class="gradient-text">engagement</span></h2>
+        <p>Chez La Une Multiservice, nous ne faisons pas que réaliser des projets — nous bâtissons des relations durables fondées sur la transparence, la qualité et le respect des délais.</p>
+        <div style="display:flex;flex-direction:column;gap:1.25rem;margin-top:2rem;">
+          <div class="highlight-box reveal"><h4 style="margin-bottom:0.5rem;">🎯 Expertise pluridisciplinaire</h4><p style="margin:0;font-size:0.875rem;">Une équipe de spécialistes dans chaque domaine, coordonnée pour des projets intégrés et sans couture.</p></div>
+          <div class="highlight-box reveal"><h4 style="margin-bottom:0.5rem;">⏱ Respect des délais</h4><p style="margin:0;font-size:0.875rem;">Nous planifions avec rigueur et communiquons en temps réel pour livrer dans les temps convenus.</p></div>
+          <div class="highlight-box reveal"><h4 style="margin-bottom:0.5rem;">🛡 Garantie qualité</h4><p style="margin:0;font-size:0.875rem;">Chaque projet est suivi d'une garantie et d'un service après-vente réactif pour votre tranquillité d'esprit.</p></div>
+        </div>
+        <div style="margin-top:2rem;"><a href="{% url 'about' %}" class="btn btn-primary">En savoir plus →</a></div>
+      </div>
+
+      <div class="reveal" style="background:var(--navy);border-radius:var(--radius-lg);padding:3rem;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:rgba(201,168,76,0.08);animation:floatAdvanced 5s ease-in-out infinite;"></div>
+        <h3 style="color:var(--white);margin-bottom:2rem;font-size:1.5rem;">Notre processus en <span class="gradient-text">4 étapes</span></h3>
+        {% for step in "1234" %}
+        <div style="display:flex;gap:1.25rem;margin-bottom:1.75rem;align-items:flex-start;">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);font-family:'Playfair Display',serif;font-size:1.1rem;flex-shrink:0;">{{ forloop.counter }}</div>
+          <div>
+            <strong style="color:var(--white);font-size:0.95rem;display:block;margin-bottom:0.25rem;">{% if forloop.counter == 1 %}Consultation & Analyse{% elif forloop.counter == 2 %}Proposition & Devis{% elif forloop.counter == 3 %}Réalisation & Suivi{% else %}Livraison & Garantie{% endif %}</strong>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin:0;">{% if forloop.counter == 1 %}Nous écoutons vos besoins et analysons votre projet en détail.{% elif forloop.counter == 2 %}Vous recevez un devis transparent et détaillé sous 24h.{% elif forloop.counter == 3 %}Notre équipe travaille avec des points de suivi réguliers.{% else %}Votre projet livré, testé, avec support et garantie inclus.{% endif %}</p>
+          </div>
+        </div>
+        {% endfor %}
+        <a href="{% url 'devis_request' %}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;">Commencer mon projet</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+{% if testimonials %}
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header reveal" style="color:var(--white);">
+      <span class="section-eyebrow">Ce que disent nos clients</span>
+      <h2 style="color:var(--white);">Ils nous font <span class="gradient-text">confiance</span></h2>
+      <div class="section-divider section-gold-line"></div>
+    </div>
+    <div class="grid-3">
+      {% for t in testimonials %}
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">{% for i in "12345" %}{% if forloop.counter <= t.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+        <p class="testimonial-text">"{{ t.content }}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">{% if t.avatar %}<img src="{{ t.avatar.url }}" alt="{{ t.name }}">{% else %}{{ t.name|slice:":1" }}{% endif %}</div>
+          <div>
+            <div class="testimonial-name">{{ t.name }}</div>
+            <div class="testimonial-role">{{ t.position }}{% if t.company %} — {{ t.company }}{% endif %}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'testimonials' %}" class="btn btn-outline">Voir tous les témoignages</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ BLOG ═══ -->
+{% if recent_articles %}
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Actualités & Conseils</span>
+      <h2>Notre <span class="gradient-text">blog</span> expert</h2>
+      <div class="section-divider section-gold-line"></div>
+    </div>
+    <div class="grid-3">
+      {% for article in recent_articles %}
+      <div class="blog-card reveal">
+        {% if article.cover_image %}<div class="blog-card-image"><img src="{{ article.cover_image.url }}" alt="{{ article.title }}"></div>
+        {% else %}<div class="blog-card-image-placeholder">📰</div>{% endif %}
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            {% if article.category %}<span class="blog-category-tag">{{ article.category.name }}</span>{% endif %}
+            <span class="blog-date">{{ article.published_at|date:"d M Y" }}</span>
+          </div>
+          <h3><a href="{% url 'blog_detail' article.slug %}">{{ article.title }}</a></h3>
+          <p>{{ article.excerpt|truncatewords:20 }}</p>
+          <a href="{% url 'blog_detail' article.slug %}" class="blog-read-more">Lire l'article <span>→</span></a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'blog_list' %}" class="btn btn-outline-gold">Voir toutes les actualités</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ CTA BAND ═══ -->
+<section style="background:linear-gradient(135deg,var(--gold) 0%,#b8952e 100%);padding:5rem 0;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.08);animation:floatAdvanced 6s ease-in-out infinite;"></div>
+  <div style="position:absolute;bottom:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.05);animation:floatAdvanced 8s ease-in-out infinite reverse;"></div>
+  <div class="container text-center" style="position:relative;z-index:2;">
+    <h2 style="color:var(--navy);margin-bottom:1rem;">Prêt à lancer votre projet ?</h2>
+    <p style="color:rgba(13,27,42,0.75);font-size:1.1rem;max-width:540px;margin:0 auto 2rem;">Contactez-nous dès aujourd'hui pour une consultation gratuite. Notre équipe vous répondra dans les 24 heures.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'devis_request' %}" class="btn btn-navy btn-lg">Demander un devis gratuit</a>
+      <a href="{% url 'contact' %}" class="btn" style="border:2px solid var(--navy);color:var(--navy);border-radius:2rem;padding:0.85rem 2rem;font-weight:600;">Nous contacter</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/animations.js' %}"></script>
+<script>
+// Animate section-gold-line on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.5 });
+document.querySelectorAll('.section-gold-line').forEach(el => obs.observe(el));
+</script>
+{% endblock %}

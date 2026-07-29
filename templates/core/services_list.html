@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Nos Services — La Une Multiservice{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Services</span>
+    </div>
+    <h1>Tous nos <span style="color:var(--gold);">services</span></h1>
+    <p>Une offre complète et intégrée pour accompagner vos projets de A à Z.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div class="services-grid">
+      {% for service in services %}
+      <div class="service-card reveal">
+        <div class="service-card-top">
+          {% if service.hero_image %}
+            <img src="{{ service.hero_image.url }}" alt="{{ service.name }}">
+            <div class="service-card-top-overlay"></div>
+          {% else %}
+            <span class="service-card-icon-fallback">{% if service.icon == 'architecture' %}🏛️{% elif service.icon == 'computer' %}💻{% elif service.icon == 'plumbing' %}🔧{% elif service.icon == 'electrical' %}⚡{% elif service.icon == 'construction' %}🏗️{% elif service.icon == 'landscaping' %}🌿{% elif service.icon == 'cleaning' %}✨{% elif service.icon == 'security' %}🔒{% else %}⚙️{% endif %}</span>
+            <div class="service-card-bg-text">{{ service.name|slice:":2"|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="service-card-body">
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.tagline }}</p>
+          <p style="font-size:0.8rem;">{{ service.description|truncatewords:20 }}</p>
+          <a href="{% url 'service_detail' service.slug %}" class="service-card-link">Découvrir <span>→</span></a>
+        </div>
+      </div>
+      {% empty %}
+      <p style="grid-column:1/-1;text-align:center;">Aucun service disponible. <a href="/admin/">Gérer les services →</a></p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(135deg,var(--gold) 0%,#b8952e 100%);padding:5rem 0;text-align:center;">
+  <div class="container">
+    <h2 style="color:var(--navy);margin-bottom:1rem;">Un projet en tête ?</h2>
+    <p style="color:rgba(13,27,42,0.75);margin-bottom:2rem;">Nous sommes là pour vous accompagner. Demandez votre devis gratuit aujourd'hui.</p>
+    <a href="{% url 'devis_request' %}" class="btn btn-navy btn-lg">Demander un devis →</a>
+  </div>
+</section>
+
+{% endblock %}

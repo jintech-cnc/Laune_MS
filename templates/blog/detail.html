@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ article.title }} — La Une Multiservice{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a><span class="breadcrumb-sep">›</span>
+      <a href="{% url 'blog_list' %}">Actualités</a><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">{{ article.title|truncatewords:5 }}</span>
+    </div>
+    {% if article.category %}<span class="badge badge-gold" style="margin-bottom:1rem;display:inline-block;">{{ article.category.name }}</span>{% endif %}
+    <h1 style="max-width:800px;">{{ article.title }}</h1>
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-top:1.5rem;color:rgba(255,255,255,0.6);font-size:0.875rem;">
+      <span>✍ {{ article.author.get_full_name|default:article.author.username }}</span>
+      <span>📅 {{ article.published_at|date:"d F Y" }}</span>
+      <span>⏱ {{ article.read_time }} min de lecture</span>
+      <span>👁 {{ article.views_count }} vues</span>
+    </div>
+  </div>
+</section>
+<section class="section" style="background:var(--cream);">
+  <div class="container" style="max-width:900px;">
+    {% if article.cover_image %}
+    <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:2.5rem;box-shadow:var(--shadow-md);max-height:500px;object-fit:cover;" class="reveal">
+    {% endif %}
+    <div class="reveal" style="font-size:1.05rem;line-height:1.9;color:var(--slate);">{{ article.content|linebreaks }}</div>
+    {% if article.domain %}
+    <div style="margin-top:2.5rem;padding:1.5rem;background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--cream-dark);display:flex;align-items:center;gap:1rem;" class="reveal">
+      <div style="font-size:2rem;">🔗</div>
+      <div>
+        <div style="font-size:0.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Service lié</div>
+        <a href="{% url 'service_detail' article.domain.slug %}" style="font-weight:600;color:var(--navy);">{{ article.domain.name }} →</a>
+      </div>
+    </div>
+    {% endif %}
+    {% if related %}
+    <div style="margin-top:4rem;">
+      <h3 style="margin-bottom:2rem;">Articles similaires</h3>
+      <div class="grid-3">
+        {% for a in related %}
+        <div class="blog-card">
+          {% if a.cover_image %}<div class="blog-card-image"><img src="{{ a.cover_image.url }}" alt="{{ a.title }}"></div>{% else %}<div class="blog-card-image-placeholder">📰</div>{% endif %}
+          <div class="blog-card-body">
+            <h3><a href="{% url 'blog_detail' a.slug %}">{{ a.title }}</a></h3>
+            <a href="{% url 'blog_detail' a.slug %}" class="blog-read-more">Lire →</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

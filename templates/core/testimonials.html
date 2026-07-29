@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Témoignages — La Une Multiservice{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Témoignages</span>
+    </div>
+    <h1>Ce que disent nos <span style="color:var(--gold);">clients</span></h1>
+    <p>La satisfaction de nos clients est notre plus belle récompense. Découvrez leurs expériences.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div class="portfolio-filters reveal" style="justify-content:center;">
+      <a href="{% url 'testimonials' %}" class="filter-btn {% if not active_domain %}active{% endif %}">Tous</a>
+      {% for svc in services %}
+      <a href="{% url 'testimonials' %}?domain={{ svc.slug }}" class="filter-btn {% if active_domain == svc.slug %}active{% endif %}">{{ svc.name }}</a>
+      {% endfor %}
+    </div>
+    <div class="grid-3">
+      {% for t in testimonials %}
+      <div class="testimonial-card reveal" style="background:var(--white);border-color:var(--cream-dark);">
+        <div class="testimonial-stars" style="color:var(--gold);">{% for i in "12345" %}{% if forloop.counter <= t.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+        <p class="testimonial-text" style="color:var(--slate);">"{{ t.content }}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:var(--gold);">
+            {% if t.avatar %}<img src="{{ t.avatar.url }}" alt="{{ t.name }}">{% else %}{{ t.name|slice:":1" }}{% endif %}
+          </div>
+          <div>
+            <div class="testimonial-name" style="color:var(--navy);">{{ t.name }}</div>
+            <div class="testimonial-role" style="color:var(--slate-light);">{{ t.position }}{% if t.company %} — {{ t.company }}{% endif %}</div>
+            {% if t.domain %}<div style="font-size:0.7rem;color:var(--gold);margin-top:0.25rem;">{{ t.domain.name }}</div>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--slate-light);">
+        <div style="font-size:3rem;margin-bottom:1rem;">⭐</div>
+        <p>Aucun témoignage pour le moment. <a href="{% url 'testimonials' %}">Voir tous</a></p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--navy);padding:5rem 0;text-align:center;">
+  <div class="container">
+    <h2 style="color:var(--white);margin-bottom:1rem;">Rejoignez nos clients satisfaits</h2>
+    <a href="{% url 'devis_request' %}" class="btn btn-primary btn-lg">Démarrer votre projet →</a>
+  </div>
+</section>
+{% endblock %}

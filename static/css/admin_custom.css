@@ -1,0 +1,27 @@
+/* La Une Multiservice — Admin CSS personnalisé */
+
+/* Header couleur dorée */
+#header { background: #0D1B2A !important; }
+#header a:link, #header a:visited { color: #C9A84C !important; }
+div#header h1 a { color: #C9A84C !important; }
+
+/* Sidebar */
+#nav-sidebar { border-right: 1px solid rgba(201,168,76,.2) !important; }
+
+/* Image upload widget — plus visible */
+.field-hero_image .help, .field-cover_image .help {
+  background: #fffbf0; border: 1px solid #C9A84C; border-radius: 6px;
+  padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #5a4a1a;
+  margin-top: 0.5rem; display: block;
+}
+.field-hero_image label, .field-cover_image label {
+  font-weight: 700; color: #0D1B2A;
+}
+/* Preview image déjà uploadée */
+.field-hero_image img, .field-cover_image img {
+  border: 3px solid #C9A84C; border-radius: 10px;
+  max-height: 180px; max-width: 320px; object-fit: cover;
+  display: block; margin-bottom: 0.75rem;
+}
+/* Fieldset section titre */
+.module h2 { background: #0D1B2A !important; color: #C9A84C !important; }

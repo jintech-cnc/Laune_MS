@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ project.title }} — La Une Multiservice{% endblock %}
+{% block extra_css %}<style>
+.gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-top:1.5rem; }
+.gallery-thumb { aspect-ratio:4/3; overflow:hidden; border-radius:8px; cursor:pointer; position:relative; }
+.gallery-thumb img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease; }
+.gallery-thumb:hover img { transform:scale(1.06); }
+.gallery-thumb-overlay { position:absolute; inset:0; background:rgba(13,27,42,0.45); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; color:white; font-size:1.5rem; }
+.gallery-thumb:hover .gallery-thumb-overlay { opacity:1; }
+.gallery-cover { grid-column:1/3; grid-row:1/3; }
+</style>{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a><span class="breadcrumb-sep">›</span>
+      <a href="{% url 'portfolio' %}">Portfolio</a><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">{{ project.title }}</span>
+    </div>
+    <span class="badge badge-gold" style="margin-bottom:1rem;display:inline-block;">{{ project.domain.name }}</span>
+    <h1>{{ project.title }}</h1>
+    {% if project.location or project.year %}
+    <p>📍 {{ project.location }}{% if project.year %} — {{ project.year }}{% endif %}{% if project.client %} &nbsp;·&nbsp; Client : {{ project.client }}{% endif %}</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:3fr 1fr;gap:3rem;">
+      <div class="reveal">
+
+        <!-- GALERIE PHOTOS -->
+        {% with all_photos=project.photos.all %}
+        {% if all_photos or project.cover_image %}
+        <div data-gallery="project-{{ project.pk }}">
+          {% if all_photos %}
+          <div class="gallery-grid">
+            <!-- Grande image = cover ou première photo -->
+            {% if project.cover_image %}
+            <div class="gallery-thumb gallery-cover" data-full="{{ project.cover_image.url }}" data-caption="{{ project.title }}">
+              <img src="{{ project.cover_image.url }}" alt="{{ project.title }}">
+              <div class="gallery-thumb-overlay">🔍</div>
+            </div>
+            {% else %}
+            <div class="gallery-thumb gallery-cover" data-full="{{ all_photos.0.image.url }}" data-caption="{{ all_photos.0.caption }}">
+              <img src="{{ all_photos.0.image.url }}" alt="{{ project.title }}">
+              <div class="gallery-thumb-overlay">🔍</div>
+            </div>
+            {% endif %}
+            <!-- Photos supplémentaires -->
+            {% for photo in all_photos %}
+            {% if not forloop.first or project.cover_image %}
+            <div class="gallery-thumb" data-full="{{ photo.image.url }}" data-caption="{{ photo.caption }}">
+              <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:project.title }}">
+              <div class="gallery-thumb-overlay">🔍</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+          {% if all_photos.count > 1 %}
+          <p style="font-size:0.75rem;color:var(--slate-light);margin-top:0.5rem;text-align:right;">{{ all_photos.count }} photos · Cliquez pour agrandir</p>
+          {% endif %}
+          {% else %}
+          <!-- Juste la cover -->
+          <div data-gallery="project-cover-{{ project.pk }}">
+            <div class="gallery-thumb" data-full="{{ project.cover_image.url }}" data-caption="{{ project.title }}" style="border-radius:12px;aspect-ratio:16/9;">
+              <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" style="border-radius:12px;">
+              <div class="gallery-thumb-overlay">🔍</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h2 style="margin-top:2.5rem;margin-bottom:1rem;">À propos du projet</h2>
+        <div style="font-size:1rem;line-height:1.9;color:var(--slate);">{{ project.description|linebreaks }}</div>
+      </div>
+
+      <div class="reveal">
+        <div style="background:var(--navy);border-radius:var(--radius-lg);padding:1.75rem;position:sticky;top:100px;">
+          <h4 style="color:var(--gold);margin-bottom:1.5rem;">Détails du projet</h4>
+          {% if project.domain %}<div style="margin-bottom:1rem;"><strong style="color:rgba(255,255,255,0.5);font-size:0.75rem;display:block;text-transform:uppercase;letter-spacing:1px;">Domaine</strong><span style="color:var(--white);">{{ project.domain.name }}</span></div>{% endif %}
+          {% if project.client %}<div style="margin-bottom:1rem;"><strong style="color:rgba(255,255,255,0.5);font-size:0.75rem;display:block;text-transform:uppercase;letter-spacing:1px;">Client</strong><span style="color:var(--white);">{{ project.client }}</span></div>{% endif %}
+          {% if project.location %}<div style="margin-bottom:1rem;"><strong style="color:rgba(255,255,255,0.5);font-size:0.75rem;display:block;text-transform:uppercase;letter-spacing:1px;">Lieu</strong><span style="color:var(--white);">{{ project.location }}</span></div>{% endif %}
+          {% if project.year %}<div style="margin-bottom:1.5rem;"><strong style="color:rgba(255,255,255,0.5);font-size:0.75rem;display:block;text-transform:uppercase;letter-spacing:1px;">Année</strong><span style="color:var(--white);">{{ project.year }}</span></div>{% endif %}
+          {% with count=project.photos.count %}{% if count %}<div style="margin-bottom:1.5rem;"><strong style="color:rgba(255,255,255,0.5);font-size:0.75rem;display:block;text-transform:uppercase;letter-spacing:1px;">Photos</strong><span style="color:var(--white);">{{ count }} illustration{{ count|pluralize }}</span></div>{% endif %}{% endwith %}
+          <a href="{% url 'devis_request' %}" class="btn btn-primary" style="width:100%;justify-content:center;">Projet similaire →</a>
+        </div>
+      </div>
+    </div>
+
+    {% if related %}
+    <div style="margin-top:4rem;">
+      <h3 style="margin-bottom:2rem;">Projets similaires</h3>
+      <div class="grid-3">
+        {% for p in related %}
+        <a href="{% url 'project_detail' p.slug %}" class="project-card" style="text-decoration:none;">
+          {% if p.cover_image %}<img src="{{ p.cover_image.url }}" alt="{{ p.title }}">{% else %}<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:4rem;">🏗️</div>{% endif %}
+          <div class="project-card-overlay"><h3>{{ p.title }}</h3><p>{{ p.location }}</p></div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/lightbox.js' %}"></script>{% endblock %}

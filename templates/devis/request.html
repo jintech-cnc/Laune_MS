@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Demande de Devis — La Une Multiservice{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Demande de Devis</span>
+    </div>
+    <h1>Demandez votre <span style="color:var(--gold);">devis gratuit</span></h1>
+    <p>Remplissez ce formulaire et notre équipe vous contactera sous 24 heures avec une proposition personnalisée.</p>
+  </div>
+</section>
+<section class="section" style="background:var(--cream);">
+  <div class="container" style="max-width:900px;">
+    <div class="devis-form-card reveal">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="form-section-title">👤 Vos informations</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label class="form-label">Nom complet *</label><input type="text" name="name" class="form-control" placeholder="Jean Dupont" required></div>
+          <div class="form-group"><label class="form-label">E-mail *</label><input type="email" name="email" class="form-control" placeholder="jean@exemple.com" required></div>
+          <div class="form-group"><label class="form-label">Téléphone *</label><input type="tel" name="phone" class="form-control" placeholder="+237 6XX XXX XXX" required></div>
+          <div class="form-group"><label class="form-label">Entreprise / Organisation</label><input type="text" name="company" class="form-control" placeholder="Nom de votre entreprise (optionnel)"></div>
+        </div>
+
+        <h3 class="form-section-title" style="margin-top:2rem;">🏗️ Votre projet</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label class="form-label">Domaine de service *</label>
+            <select name="domain" class="form-control" required>
+              <option value="">— Sélectionner —</option>
+              {% for svc in services %}<option value="{{ svc.id }}">{{ svc.name }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Lieu du projet</label><input type="text" name="location" class="form-control" placeholder="Ville, Quartier"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Titre du projet *</label><input type="text" name="project_title" class="form-control" placeholder="Ex: Construction d'un immeuble R+3" required></div>
+        <div class="form-group"><label class="form-label">Description détaillée *</label><textarea name="description" class="form-control" placeholder="Décrivez votre projet en détail : superficie, spécifications techniques, matériaux souhaités, contraintes particulières..." style="min-height:180px;" required></textarea></div>
+
+        <h3 class="form-section-title" style="margin-top:2rem;">💰 Budget &amp; Délais</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+          <div class="form-group">
+            <label class="form-label">Fourchette budgétaire</label>
+            <div class="budget-options">
+              {% for val, label in form_choices %}{% endfor %}
+              <label><input type="radio" name="budget" value="less_500k" class="budget-option"><label class="budget-label" for="">Moins de 500K FCFA</label></label>
+            </div>
+            <select name="budget" class="form-control">
+              <option value="undefined">Budget à définir</option>
+              <option value="less_500k">Moins de 500 000 FCFA</option>
+              <option value="500k_2m">500 000 — 2 000 000 FCFA</option>
+              <option value="2m_10m">2 000 000 — 10 000 000 FCFA</option>
+              <option value="more_10m">Plus de 10 000 000 FCFA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Urgence</label>
+            <select name="urgency" class="form-control">
+              <option value="flexible">Flexible</option>
+              <option value="asap">Urgent (moins de 2 semaines)</option>
+              <option value="month">Dans le mois</option>
+              <option value="quarter">Dans le trimestre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Document joint (plans, cahier des charges...)</label><input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png,.zip"></div>
+
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:var(--radius);padding:1rem;margin-bottom:1.5rem;font-size:0.8rem;color:var(--slate);">
+          ✓ Devis gratuit et sans engagement · ✓ Réponse sous 24h · ✓ Confidentialité garantie
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Envoyer ma demande de devis →</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

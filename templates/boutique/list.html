@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Catalogue — La Une Multiservice{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Catalogue</span>
+    </div>
+    <h1>Catalogue <span style="color:var(--gold);">produits & services</span></h1>
+    <p>Découvrez l'ensemble de nos prestations et produits avec tarifs indicatifs. Devis sur mesure sous 24h.</p>
+  </div>
+</section>
+
+<!-- FEATURED -->
+{% if featured %}
+<section class="section-sm" style="background:var(--navy);">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <div>
+        <span class="section-eyebrow">Sélection</span>
+        <h3 style="color:var(--white);font-size:1.4rem;">Nos offres <span style="color:var(--gold);">phares</span></h3>
+      </div>
+    </div>
+    <div class="grid-4">
+      {% for item in featured %}
+      <a href="{% url 'catalogue_detail' item.slug %}" style="text-decoration:none;" class="reveal">
+        <div class="catalogue-card" style="background:rgba(255,255,255,0.05);border-color:rgba(201,168,76,0.2);">
+          <div class="catalogue-card-img">
+            {% if item.cover_image %}<img src="{{ item.cover_image.url }}" alt="{{ item.name }}">
+            {% else %}{% if item.item_type == 'architecture' %}🏛️{% elif item.item_type == 'computer' %}💻{% else %}⚙️{% endif %}{% endif %}
+            <span class="catalogue-type-badge type-{{ item.item_type }}">{{ item.get_item_type_display }}</span>
+          </div>
+          <div class="catalogue-card-body" style="background:rgba(255,255,255,0.03);">
+            <h3 style="color:var(--white);">{{ item.name }}</h3>
+            <p style="color:rgba(255,255,255,0.6);">{{ item.short_description|truncatewords:12 }}</p>
+            <div class="catalogue-price">{{ item.get_price_display }}</div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:2.5rem;align-items:start;">
+
+      <!-- SIDEBAR FILTERS -->
+      <div class="reveal" style="position:sticky;top:100px;">
+        <!-- Search -->
+        <form method="GET" style="margin-bottom:1.5rem;">
+          <div style="position:relative;">
+            <input type="text" name="q" value="{{ search }}" placeholder="Rechercher..." class="form-control" style="padding-left:2.25rem;">
+            <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--slate-light);">🔍</span>
+          </div>
+        </form>
+
+        <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.25rem;border:1px solid var(--cream-dark);margin-bottom:1rem;">
+          <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--slate-light);font-weight:700;margin-bottom:0.75rem;">Type</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem;">
+            <a href="{% url 'catalogue_list' %}" class="filter-btn {% if not active_type %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">Tout</a>
+            {% for val, label in type_choices %}
+            <a href="?type={{ val }}{% if active_cat %}&category={{ active_cat }}{% endif %}" class="filter-btn {% if active_type == val %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">{{ label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% if categories %}
+        <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.25rem;border:1px solid var(--cream-dark);margin-bottom:1rem;">
+          <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--slate-light);font-weight:700;margin-bottom:0.75rem;">Catégories</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem;">
+            <a href="{% url 'catalogue_list' %}" class="filter-btn {% if not active_cat %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">Toutes</a>
+            {% for cat in categories %}
+            <a href="?category={{ cat.slug }}" class="filter-btn {% if active_cat == cat.slug %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">{{ cat.icon }} {{ cat.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if services %}
+        <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.25rem;border:1px solid var(--cream-dark);">
+          <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--slate-light);font-weight:700;margin-bottom:0.75rem;">Domaine</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem;">
+            <a href="{% url 'catalogue_list' %}" class="filter-btn {% if not active_domain %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">Tous</a>
+            {% for svc in services %}
+            <a href="?domain={{ svc.slug }}" class="filter-btn {% if active_domain == svc.slug %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">{{ svc.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <div style="margin-top:1.5rem;background:linear-gradient(135deg,var(--gold),#b8952e);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">💬</div>
+          <p style="color:var(--navy);font-size:0.8rem;font-weight:600;margin-bottom:0.75rem;">Besoin d'un conseil ?</p>
+          <a href="{% url 'devis_request' %}" class="btn btn-navy btn-sm" style="width:100%;justify-content:center;">Devis gratuit</a>
+        </div>
+      </div>
+
+      <!-- ITEMS GRID -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+          <p style="font-size:0.875rem;color:var(--slate-light);">
+            <strong style="color:var(--navy);">{{ items|length }}</strong> résultat{{ items|length|pluralize }}
+            {% if search %}pour « {{ search }} »{% endif %}
+          </p>
+        </div>
+        <div class="grid-3">
+          {% for item in items %}
+          <a href="{% url 'catalogue_detail' item.slug %}" style="text-decoration:none;" class="reveal">
+            <div class="catalogue-card">
+              <div class="catalogue-card-img">
+                {% if item.cover_image %}<img src="{{ item.cover_image.url }}" alt="{{ item.name }}">
+                {% else %}
+                  {% if item.domain %}
+                    {% if item.domain.icon == 'architecture' %}🏛️{% elif item.domain.icon == 'computer' %}💻{% elif item.domain.icon == 'plumbing' %}🔧{% elif item.domain.icon == 'electrical' %}⚡{% elif item.domain.icon == 'construction' %}🏗️{% else %}⚙️{% endif %}
+                  {% else %}📦{% endif %}
+                {% endif %}
+                <span class="catalogue-type-badge type-{{ item.item_type }}">{{ item.get_item_type_display }}</span>
+              </div>
+              <div class="catalogue-card-body">
+                {% if item.domain %}<div style="font-size:0.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:0.4rem;">{{ item.domain.name }}</div>{% endif %}
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.short_description|truncatewords:15 }}</p>
+                <div class="catalogue-price">
+                  {{ item.get_price_display }}
+                  {% if not item.price_on_quote and item.price %}<small>/ {{ item.get_price_unit_display }}</small>{% endif %}
+                </div>
+                {% if item.warranty %}<div style="font-size:0.75rem;color:var(--slate-light);">🛡️ {{ item.warranty }}</div>{% endif %}
+              </div>
+            </div>
+          </a>
+          {% empty %}
+          <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--slate-light);">
+            <div style="font-size:3rem;margin-bottom:1rem;">📦</div>
+            <p>Aucun article trouvé. <a href="{% url 'catalogue_list' %}">Réinitialiser les filtres</a></p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

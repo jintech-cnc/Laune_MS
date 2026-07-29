@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Conversations Chat — Admin{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <h1>💬 Conversations <span style="color:var(--gold);">Chat</span></h1>
+    <p>{{ sessions|length }} session(s) enregistrée(s)</p>
+  </div>
+</section>
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    {% for session in sessions %}
+    <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;border:1px solid var(--cream-dark);" class="reveal">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <div>
+          <strong>{{ session.visitor_name }}</strong>
+          {% if session.visitor_email %}<span style="color:var(--slate-light);font-size:0.85rem;"> — {{ session.visitor_email }}</span>{% endif %}
+        </div>
+        <div style="font-size:0.75rem;color:var(--slate-light);">{{ session.started_at|date:"d/m/Y H:i" }}</div>
+      </div>
+      <div style="background:var(--navy);border-radius:8px;padding:1rem;max-height:300px;overflow-y:auto;">
+        {% for msg in session.messages.all %}
+        <div style="margin-bottom:0.75rem;{% if msg.sender == 'visitor' %}text-align:right;{% endif %}">
+          <span style="display:inline-block;padding:0.4rem 0.8rem;border-radius:8px;font-size:0.82rem;
+            {% if msg.sender == 'visitor' %}background:var(--gold);color:var(--navy);{% else %}background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);{% endif %}">
+            {{ msg.content }}
+          </span>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);margin-top:0.2rem;">{{ msg.sent_at|date:"H:i" }}</div>
+        </div>
+        {% empty %}
+        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Aucun message</p>
+        {% endfor %}
+      </div>
+    </div>
+    {% empty %}
+    <div style="text-align:center;padding:4rem;color:var(--slate-light);">
+      <div style="font-size:3rem;margin-bottom:1rem;">💬</div>
+      <p>Aucune conversation pour le moment.</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

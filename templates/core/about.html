@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}À Propos — La Une Multiservice{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">À Propos</span>
+    </div>
+    <h1>Notre <span style="color:var(--gold);">histoire</span>, notre mission</h1>
+    <p>Depuis 2021, La Une Multiservice œuvre pour l'excellence et l'innovation au service de ses clients à travers la République Démocratique du Congo et l'Afrique centrale.</p>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;">
+      <div class="reveal">
+        <span class="section-eyebrow">Notre mission</span>
+        <h2 style="margin-bottom:1.5rem;">Transformer vos <span class="text-gold">visions</span> en réalité</h2>
+        <p>Fondée par des ingénieurs et techniciens passionnés, La Une Multiservice est née d'une conviction simple : chaque client mérite des solutions sur mesure, exécutées avec excellence et livrées dans les délais.</p>
+        <p>Nous avons grandi en restant fidèles à ces valeurs, élargissant notre expertise de domaine en domaine, construisant une équipe de spécialistes partageant la même philosophie d'excellence.</p>
+        <p>Aujourd'hui, nous sommes fiers d'être le partenaire de confiance de centaines d'entreprises, d'institutions et de particuliers à travers le Cameroun et au-delà.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem;">
+          <div style="text-align:center;background:var(--white);border-radius:var(--radius-lg);padding:1.5rem;border:1px solid var(--cream-dark);">
+            <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--gold);" class="counter" data-target="2010">2010</div>
+            <div style="font-size:0.8rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:1px;">Année de création</div>
+          </div>
+          <div style="text-align:center;background:var(--white);border-radius:var(--radius-lg);padding:1.5rem;border:1px solid var(--cream-dark);">
+            <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--gold);">5+</div>
+            <div style="font-size:0.8rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:1px;">Villes couvertes</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="position:relative;">
+        <div style="background:var(--navy);border-radius:var(--radius-lg);padding:3rem;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:rgba(201,168,76,0.08);"></div>
+          <h3 style="color:var(--gold);margin-bottom:1.75rem;font-size:1.3rem;">Nos valeurs fondamentales</h3>
+          {% for val in "1234" %}
+          <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">
+              {% if forloop.counter == 1 %}🎯{% elif forloop.counter == 2 %}🤝{% elif forloop.counter == 3 %}💡{% else %}🌱{% endif %}
+            </div>
+            <div>
+              <strong style="color:var(--white);display:block;margin-bottom:0.25rem;font-size:0.95rem;">
+                {% if forloop.counter == 1 %}Excellence opérationnelle
+                {% elif forloop.counter == 2 %}Intégrité & Transparence
+                {% elif forloop.counter == 3 %}Innovation continue
+                {% else %}Développement durable{% endif %}
+              </strong>
+              <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin:0;line-height:1.6;">
+                {% if forloop.counter == 1 %}Chaque détail compte. Nous visons la perfection dans chaque livrable.
+                {% elif forloop.counter == 2 %}Honnêteté totale sur les coûts, délais et capacités.
+                {% elif forloop.counter == 3 %}Nous adoptons les meilleures technologies et méthodes pour vos projets.
+                {% else %}Nos solutions respectent l'environnement et les communautés locales.{% endif %}
+              </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal"><span class="number counter" data-target="500">0</span><div class="label">Projets réalisés</div></div>
+      <div class="stat-item reveal"><span class="number counter" data-target="14">0</span><div class="label">Années d'expérience</div></div>
+      <div class="stat-item reveal"><span class="number counter" data-target="8">0</span><div class="label">Domaines d'expertise</div></div>
+      <div class="stat-item reveal"><span class="number counter" data-target="98">0</span><div class="label">% Satisfaction client</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+{% if team %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Notre équipe</span>
+      <h2>Les <span class="text-gold">experts</span> qui font la différence</h2>
+      <p>Des professionnels aguerris, passionnés par leurs métiers et dédiés à votre satisfaction.</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="grid-{% if team|length >= 4 %}4{% elif team|length == 3 %}3{% else %}2{% endif %}">
+      {% for member in team %}
+      <div class="team-card reveal">
+        <div class="team-photo">
+          {% if member.photo %}<img src="{{ member.photo.url }}" alt="{{ member.name }}">{% else %}{{ member.name|slice:":1" }}{% endif %}
+        </div>
+        <div class="team-name">{{ member.name }}</div>
+        <div class="team-role">{{ member.role }}</div>
+        <p class="team-bio">{{ member.bio|truncatewords:25 }}</p>
+        {% if member.email %}
+        <a href="mailto:{{ member.email }}" style="font-size:0.8rem;color:var(--gold);">✉ {{ member.email }}</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- TIMELINE -->
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Notre parcours</span>
+      <h2>14 ans d'<span class="text-gold">évolution</span></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div style="position:relative;max-width:800px;margin:0 auto;">
+      <div style="position:absolute;left:50%;transform:translateX(-50%);width:2px;background:linear-gradient(to bottom, var(--gold), transparent);height:100%;"></div>
+      {% for item in "12345" %}
+      <div class="reveal" style="display:flex;gap:2rem;margin-bottom:3rem;{% if forloop.counter|divisibleby:2 %}flex-direction:row-reverse;{% endif %}">
+        <div style="flex:1;{% if forloop.counter|divisibleby:2 %}text-align:left;{% else %}text-align:right;{% endif %}">
+          <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow-sm);border:1px solid var(--cream-dark);display:inline-block;max-width:280px;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);font-weight:700;margin-bottom:0.5rem;">
+              {% if forloop.counter == 1 %}2010{% elif forloop.counter == 2 %}2013{% elif forloop.counter == 3 %}2016{% elif forloop.counter == 4 %}2019{% else %}2024{% endif %}
+            </div>
+            <h4 style="margin-bottom:0.5rem;">
+              {% if forloop.counter == 1 %}Fondation
+              {% elif forloop.counter == 2 %}Expansion
+              {% elif forloop.counter == 3 %}Digitalisation
+              {% elif forloop.counter == 4 %}Certification ISO
+              {% else %}Rayonnement régional{% endif %}
+            </h4>
+            <p style="font-size:0.8rem;margin:0;">
+              {% if forloop.counter == 1 %}Création de La Une Multiservice avec 3 domaines piliers : architecture, plomberie, électricité.
+              {% elif forloop.counter == 2 %}Intégration du pôle informatique et ouverture d'un second bureau à Douala.
+              {% elif forloop.counter == 3 %}Mise en place d'un système de gestion digitale et plateforme client en ligne.
+              {% elif forloop.counter == 4 %}Obtention de la certification ISO 9001 pour notre système qualité.
+              {% else %}Expansion vers le Gabon et la RCA. 500+ projets réalisés, 50 collaborateurs.{% endif %}
+            </p>
+          </div>
+        </div>
+        <div style="width:16px;height:16px;border-radius:50%;background:var(--gold);border:3px solid var(--cream);flex-shrink:0;margin-top:1.5rem;z-index:1;position:relative;"></div>
+        <div style="flex:1;"></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--navy);padding:5rem 0;text-align:center;">
+  <div class="container">
+    <h2 style="color:var(--white);margin-bottom:1rem;">Rejoignez nos <span style="color:var(--gold);">500+ clients satisfaits</span></h2>
+    <p style="color:rgba(255,255,255,0.7);margin-bottom:2rem;">Faites confiance à notre expertise pour votre prochain projet.</p>
+    <a href="{% url 'devis_request' %}" class="btn btn-primary btn-lg">Obtenir un devis gratuit →</a>
+  </div>
+</section>
+
+{% endblock %}

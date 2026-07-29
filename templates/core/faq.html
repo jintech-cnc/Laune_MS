@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}FAQ — La Une Multiservice{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero-pattern"></div>
+  <div class="container page-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Accueil</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">FAQ</span>
+    </div>
+    <h1>Questions <span style="color:var(--gold);">fréquentes</span></h1>
+    <p>Retrouvez ici les réponses aux questions que nos clients posent le plus souvent.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 3fr;gap:3rem;align-items:start;">
+      <div class="reveal" style="position:sticky;top:100px;">
+        <h4 style="margin-bottom:1rem;color:var(--slate-light);font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;">Filtrer par domaine</h4>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <a href="{% url 'faq' %}" class="filter-btn {% if not active_domain %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">Toutes les questions</a>
+          {% for svc in services %}
+          <a href="{% url 'faq' %}?domain={{ svc.slug }}" class="filter-btn {% if active_domain == svc.slug %}active{% endif %}" style="text-align:left;border-radius:var(--radius);">{{ svc.name }}</a>
+          {% endfor %}
+        </div>
+        <div style="margin-top:2rem;background:var(--navy);border-radius:var(--radius-lg);padding:1.5rem;">
+          <h4 style="color:var(--white);margin-bottom:0.75rem;font-size:1rem;">Pas trouvé votre réponse ?</h4>
+          <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin-bottom:1rem;">Notre équipe est là pour vous.</p>
+          <a href="{% url 'contact' %}" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">Nous contacter</a>
+        </div>
+      </div>
+
+      <div>
+        {% if general_faqs and not active_domain %}
+        <h3 style="margin-bottom:1.5rem;font-size:1.3rem;">Questions générales</h3>
+        {% for faq in general_faqs %}
+        <div class="faq-item reveal">
+          <button class="faq-question">{{ faq.question }}<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">{{ faq.answer }}</div></div>
+        </div>
+        {% endfor %}
+        {% if faqs %}<h3 style="margin:2.5rem 0 1.5rem;font-size:1.3rem;">Par domaine</h3>{% endif %}
+        {% endif %}
+
+        {% for faq in faqs %}
+        <div class="faq-item reveal">
+          <button class="faq-question">
+            {% if faq.domain %}<span style="color:var(--gold);font-size:0.7rem;text-transform:uppercase;margin-right:0.5rem;">{{ faq.domain.name }}</span>{% endif %}
+            {{ faq.question }}<span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">{{ faq.answer }}</div></div>
+        </div>
+        {% empty %}
+        {% if not general_faqs %}
+        <div style="text-align:center;padding:3rem;color:var(--slate-light);">
+          <div style="font-size:3rem;margin-bottom:1rem;">❓</div>
+          <p>Aucune question trouvée. <a href="{% url 'faq' %}">Voir toutes les FAQ</a></p>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
