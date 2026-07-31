@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-laune-multiservice-change-in-production-xyz123'
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "laune-multiservice.onrender.com",
@@ -102,3 +102,6 @@ class CustomAdminSite:
     pass
 
 JAZZMIN_SETTINGS = {}  # placeholder
+CSRF_TRUSTED_ORIGINS = [
+    "https://laune-multiservice.onrender.com",
+]
